@@ -1,0 +1,273 @@
+Metadata-Version: 2.4
+Name: hands-on-ai
+Version: 0.2.1
+Summary: Hands-on AI Toolkit for classrooms
+Author-email: Michael Borck <michael@borck.me>
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: requests
+Requires-Dist: typer
+Requires-Dist: python-fasthtml
+Requires-Dist: python-docx
+Requires-Dist: pymupdf
+Requires-Dist: scikit-learn
+Requires-Dist: numpy
+Requires-Dist: instructor>=1.11.0
+Requires-Dist: pydantic>=2.0
+Requires-Dist: pytest ; extra == "dev"
+Requires-Dist: build ; extra == "dev"
+Requires-Dist: twine==6.0.1 ; extra == "dev"
+Requires-Dist: cython ; extra == "dev"
+Requires-Dist: ruff ; extra == "dev"
+Requires-Dist: mkdocs ; extra == "dev"
+Requires-Dist: mkdocstrings[python] ; extra == "dev"
+Requires-Dist: mkdocs-material ; extra == "dev"
+Requires-Dist: pymdown-extensions ; extra == "dev"
+Requires-Dist: uv ; extra == "dev"
+Project-URL: Documentation, https://michael-borck.github.io/hands-on-ai/
+Project-URL: Homepage, https://github.com/teaching-repositories/hands-on-ai
+Project-URL: Issues, https://github.com/teaching-repositories/hands-on-ai/issues
+Project-URL: LLM Guide, https://github.com/teaching-repositories/hands-on-ai/blob/main/LLM.txt
+Project-URL: Source, https://github.com/teaching-repositories/hands-on-ai
+Provides-Extra: agent
+Provides-Extra: chat
+Provides-Extra: dev
+Provides-Extra: rag
+
+# HandsOnAI: Your AI Learning Lab
+
+[![Python 3.6+](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
+[![MIT License](https://img.shields.io/badge/licence-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Classroom Ready](https://img.shields.io/badge/classroom-ready-brightgreen.svg)]()
+[![Beginner Friendly](https://img.shields.io/badge/beginner-friendly-orange.svg)]()
+
+> AI learning made simple for students and educators
+
+HandsOnAI is a unified educational toolkit designed to teach students how modern AI systems work — by building and interacting with them directly.
+
+It provides a clean, modular structure that introduces core AI concepts progressively through three tools:
+
+## 🧱 Module Overview
+
+| Module | Purpose | CLI Name |
+|--------|---------|----------|
+| chat | Simple chatbot with system prompts | chat |
+| rag | Retrieval-Augmented Generation (RAG) | rag |
+| agent | ReAct-style reasoning with tool use | agent |
+| models | Model capability detection and utilities | models |
+
+Each module is:
+- 🔌 Self-contained
+- 🧩 Installable via one package: `pip install hands-on-ai`
+- 🧠 Designed for progressive learning
+
+## 🗂 Project Structure
+
+```
+hands_on_ai/
+├── chat/           ← A simple prompt/response chatbot
+├── rag/            ← Ask questions using your own documents
+├── agent/          ← Agent reasoning + tools (ReAct-style)
+├── config.py       ← Shared config (model, chunk size, paths)
+├── cli.py          ← Meta CLI (list, config, version)
+├── models.py       ← Centralized model utilities
+├── utils/          ← Shared tools, prompts, paths, etc.
+└── commands/       ← Shared CLI commands
+```
+
+Examples and scripts are available in the repository:
+
+```
+hands-on-ai/
+├── examples/       ← Example scripts for all modules
+└── scripts/        ← Utility scripts for package maintenance
+```
+
+## 🧑‍🏫 Why This Matters for Students
+
+Each tool teaches a different level of modern AI interaction:
+
+- **chat** – Prompt engineering, roles, and LLMs
+- **rag** – Document search, embeddings, and grounded answers
+- **agent** – Multi-step reasoning, tool use, and planning
+
+## 🚀 Getting Started
+
+### Installation
+
+```bash
+# Install from PyPI
+pip install hands-on-ai
+
+# Or directly from GitHub
+pip install git+https://github.com/teaching-repositories/hands-on-ai.git
+```
+
+### Prerequisites
+
+- Python 3.6 or higher
+- Any OpenAI-compatible LLM provider (see [Provider Compatibility](#provider-compatibility))
+
+### Quick Start
+
+#### Option 1: Set configuration in Python (Recommended for beginners)
+
+```python
+import os
+
+# Configure your provider
+os.environ['HANDS_ON_AI_SERVER'] = 'https://ollama.serveur.au'
+os.environ['HANDS_ON_AI_MODEL'] = 'llama3.2'
+os.environ['HANDS_ON_AI_API_KEY'] = input('Enter your API key: ')
+
+# Now use HandsOnAI
+from hands_on_ai.chat import pirate_bot
+print(pirate_bot("What is photosynthesis?"))
+```
+
+#### Option 2: Use environment variables
+
+Run a local Ollama server, then set environment variables and start chatting:
+
+```bash
+export HANDS_ON_AI_SERVER="http://localhost:11434"
+# No API key needed for local Ollama
+```
+
+```python
+from hands_on_ai.chat import pirate_bot
+print(pirate_bot("What is photosynthesis?"))
+```
+
+For more options:
+
+```python
+from hands_on_ai.chat import get_response, friendly_bot, pirate_bot
+
+# Basic usage with default model
+response = get_response("Tell me about planets")
+print(response)
+
+# Use a personality bot
+pirate_response = pirate_bot("Tell me about sailing ships")
+print(pirate_response)
+```
+
+## 🌍 Provider-Agnostic Architecture
+
+HandsOnAI is designed to work with **any OpenAI-compatible LLM provider**. The system uses standard OpenAI API endpoints (`/v1/chat/completions`, `/v1/models`) making it compatible with a wide range of AI services.
+
+### Configuration
+
+Set your provider using environment variables:
+
+```bash
+# Set your provider's base URL
+export HANDS_ON_AI_SERVER="https://your-provider-url"
+
+# Set API key if required
+export HANDS_ON_AI_API_KEY="your-api-key"
+
+# Enable debug logging
+export HANDS_ON_AI_LOG="debug"
+```
+
+### Provider Examples
+
+#### Ollama (Local)
+```bash
+export HANDS_ON_AI_SERVER="http://localhost:11434"
+# No API key needed for local Ollama
+```
+
+#### OpenAI
+```bash
+export HANDS_ON_AI_SERVER="https://api.openai.com"
+export HANDS_ON_AI_API_KEY="sk-your-openai-key"
+```
+
+#### Together AI
+```bash
+export HANDS_ON_AI_SERVER="https://api.together.xyz"
+export HANDS_ON_AI_API_KEY="your-together-key"
+```
+
+#### OpenRouter
+```bash
+export HANDS_ON_AI_SERVER="https://openrouter.ai/api"
+export HANDS_ON_AI_API_KEY="your-openrouter-key"
+export HANDS_ON_AI_MODEL="openai/gpt-4o"  # or any model they support
+```
+
+#### LocalAI
+```bash
+export HANDS_ON_AI_SERVER="http://localhost:8080"
+# API key optional depending on setup
+```
+
+## 📊 Provider Compatibility
+
+HandsOnAI works with any service that implements OpenAI-compatible endpoints:
+
+| **Provider** | **Base URL Example** | **Authentication** | **Status** |
+|--------------|---------------------|-------------------|------------|
+| **Ollama** | `http://localhost:11434` | None (local) | ✅ Tested |
+| **OpenAI** | `https://api.openai.com` | Bearer token | ✅ Compatible |
+| **OpenRouter** | `https://openrouter.ai/api` | Bearer token | ✅ Compatible |
+| **Together AI** | `https://api.together.xyz` | Bearer token | ✅ Compatible |
+| **LocalAI** | `http://localhost:8080` | Optional | ✅ Compatible |
+| **vLLM** | `http://your-vllm-server` | Optional | ✅ Compatible |
+| **Groq** | `https://api.groq.com` | Bearer token | ✅ Compatible |
+| **Hugging Face** | `https://api-inference.huggingface.co` | Bearer token | ✅ Compatible |
+| **Any OpenAI-compatible server** | `http://your-server` | Varies | ✅ Compatible |
+
+### Requirements for Compatibility
+
+Your provider must support:
+- ✅ `/v1/chat/completions` endpoint
+- ✅ `/v1/models` endpoint  
+- ✅ OpenAI message format (`{"role": "user", "content": "..."}`)
+- ✅ Bearer token authentication (if API key required)
+
+### Educational Benefits
+
+This provider-agnostic approach offers several educational advantages:
+- 🌍 **No vendor lock-in** - Switch providers without code changes
+- 📚 **Industry standards** - Students learn OpenAI API patterns used across the industry
+- 🔧 **Real-world skills** - Transferable knowledge to other AI tools and platforms
+- 💡 **Flexibility** - Use local models for privacy or cloud models for power
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get involved.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤖 LLM Ready
+
+This package is designed to work seamlessly with Large Language Models for coding assistance and learning:
+
+### For Students & Educators
+- **[LLM.txt](https://github.com/teaching-repositories/hands-on-ai/blob/main/LLM.txt)** - Complete reference guide for LLMs
+- **[Documentation](https://michael-borck.github.io/hands-on-ai/)** - Full documentation site
+
+### How to Use with LLMs
+1. **Download** the [LLM.txt file](https://github.com/teaching-repositories/hands-on-ai/blob/main/LLM.txt)
+2. **Upload** it to your LLM (Claude, ChatGPT, etc.)
+3. **Ask** for help with HandsOnAI projects - get complete, working code examples
+
+Example prompts:
+- *"Create a pirate chatbot using hands-on-ai"*
+- *"Build a document Q&A system with the RAG module"*  
+- *"Make an agent that can calculate and search the web"*
+
+The LLM will have complete knowledge of the API, examples, and best practices.
+
+## Acknowledgments
+
+- Built with education in mind
+- Powered by open-source LLM technology
+- Inspired by educators who want to bring AI into the classroom responsibly

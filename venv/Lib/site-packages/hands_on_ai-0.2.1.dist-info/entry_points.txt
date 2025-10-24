@@ -1,0 +1,6 @@
+[console_scripts]
+agent=hands_on_ai.agent.cli:app
+chat=hands_on_ai.chat.cli:app
+handsonai=hands_on_ai.cli:app
+rag=hands_on_ai.rag.cli:app
+

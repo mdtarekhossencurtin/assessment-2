@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Weather Query</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl bg-white p-8 rounded-2xl shadow-2xl border border-gray-100">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold text-indigo-700">Weather Chat 🌦️</h1>
+            <p class="text-gray-500 mt-2">Ask a question about the weather!</p>
+        </header>
+        <form action="{{ url_for('get_response') }}" method="POST" class="space-y-6">
+            <div class="relative">
+                <input 
+                    type="text" 
+                    id="weather-query" 
+                    name="weather" 
+                    placeholder="e.g., What is the temperature in London?" 
+                    class="w-full px-5 py-3 border-2 border-indigo-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition duration-150 shadow-md text-gray-700"
+                    required
+                >
+            </div>
+            
+            <button 
+                type="submit" 
+                class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-indigo-700 transition duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.01] active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-300"
+            >
+                Get Weather
+            </button>
+        </form>
+        <div class="mt-8 pt-6 border-t border-gray-200">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-500 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                Chatbot Response
+            </h2>
+            
+            <div id="response-output" class="p-5 bg-indigo-50 rounded-xl text-gray-800 text-base leading-relaxed whitespace-pre-wrap shadow-inner border border-indigo-100">
+                {% if response %}
+                    <span id="response-content" style="display: none;">{{ response | safe }}</span>
+                {% else %}
+                    Welcome! Please submit a query above to see the weather information here.
+                {% endif %}
+            </div>
+            {% if full_path or new_path %}
+                <div id="graph-wrapper" 
+                    class="mt-6 flex justify-center gap-4 opacity-0 transition-opacity duration-700 ease-in-out">
+                    {% if full_path %}
+                        <div>
+                            <img src="{{ full_path }}" alt="Weather Graph 1" 
+                                class="rounded-xl shadow-lg border border-gray-200 max-w-full w-[400px] h-auto">
+                        </div>
+                    {% endif %}
+                    {% if new_path %}
+                        <div>
+                            <img src="{{ new_path }}" alt="Weather Graph 2" 
+                                class="rounded-xl shadow-lg border border-gray-200 max-w-full w-[400px] h-auto">
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+    
+        <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const contentElement = document.getElementById('response-content');
+                    const outputElement = document.getElementById('response-output');
+                    const graphWrapper = document.getElementById('graph-wrapper');
+
+                    if (contentElement) {
+                        const fullText = contentElement.innerHTML;
+                        outputElement.innerHTML = '';
+                        contentElement.remove();
+
+                        let i = 0;
+                        const speed = 25;
+
+                        function typeWriter() {
+                            if (i < fullText.length) {
+                                outputElement.innerHTML += fullText.charAt(i);
+                                i++;
+                                setTimeout(typeWriter, speed);
+                            } else {
+                                if (graphWrapper) {
+                                    graphWrapper.style.opacity = '1';
+                                }
+                            }
+                        }
+
+                        typeWriter();
+                    } else {
+                        if (graphWrapper) {
+                            graphWrapper.style.opacity = '1';
+                        }
+                    }
+                });
+        </script>
+
+
+</body>
+</html>
